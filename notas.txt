@@ -1,0 +1,24 @@
+little endian: um dos erros foi escrever o arquivo binário como se fosse big endian
+
+leitura formatada: tentar ler em binário com fscanf; fscanf é uma leitura formatada, é própria para textos
+
+BINARIOS:
+Para editar os arquivos em hexadecimal, fazer "vim -b <nome do arquivo>" seguido de ":%!xxd". editar normalmente e para voltar à forma hexadecimal usar ":%!xxd -r"
+
+-------.WAV FILE especifiações --------
+- 20/22: tipo de formato (PCM = 1)
+- 22/24: numero de canais
+- 24/28: sample rate
+- 28/32: bytes por segundo
+- 32/34: bytes por bloco
+- 34/36: bits por sample
+- 40/45: tamanho do bloco de dados de audio
+
+---------------------------------------
+
+
+
+
+se a frequencia de oscilação é de 440Hz e a de amostragem é de 44100, a cada quantas amostras se repete um ciclo, em 1 segundo?
+-> 1 ciclo a cada 1/440s
+-> se a cada 1s são 44100 amostras, em 1/440s são 44100*1/440 amostras; aproximadamente a cada 100 amostras
