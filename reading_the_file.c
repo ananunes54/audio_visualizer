@@ -3,13 +3,14 @@
 #include <stdlib.h>
 
 
-#define FILE_NAME "440Hz_44100Hz_16bit_05sec.wav"
+#define FILE_NAME "audios/440Hz_44100Hz_16bit_05sec.wav"
 
 #define FORMAT_OFFSET 20
 #define CHANNELS_OFFSET 22
 #define SAMPLE_RATE_OFFSET 24
 #define CHUNK_SIZE_OFFSET 40
-#define FILE_ENTRY_POINT 44
+
+#define FILE_ENTRY_POINT 100
 
 #define BUFFER_SIZE 1764
 
@@ -33,6 +34,7 @@ void CheckError(void *ptr, const char *message) {
 info *SetFileInfo(FILE *fp) {
 	info *file_info = (info *)malloc(sizeof(info));
 	size_t read;
+
 
 	fseek(fp, FORMAT_OFFSET, SEEK_SET);
 	read = fread(&file_info->format_type, sizeof(uint16_t), 1, fp);

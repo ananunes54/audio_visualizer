@@ -4,13 +4,13 @@
 #include <portaudio.h>
 #include <stdint.h>
 
-#define DEVICE                 (0)
-#define CHANNELS               (1)
-#define SAMPLE_FORMAT    (paInt16)
-#define SAMPLE_RATE        (44100)
-#define FRAMES_PER_BUFFER  (44100)
-#define TIME                   (1)
-
+#define DEVICE                   (0)
+#define CHANNELS                 (1)
+#define SAMPLE_FORMAT      (paInt16)
+#define SAMPLE_RATE          (44100)
+#define FRAMES_PER_BUFFER    (44100)
+#define TIME                     (1)
+#define ARQUIVO "stream_data.bin"
 
 void CheckError (PaError error, const char *step) {
 
@@ -39,9 +39,9 @@ PaStreamParameters *setParameters(const PaDeviceInfo *device_info) {
 }
 
 
-void WriteToFile(uint16_t *buffer, int samples) {
+void WriteToFile(int16_t *buffer, int samples) {
 
-	FILE *fp = fopen("stream_data.bin", "wb");
+	FILE *fp = fopen(ARQUIVO, "wb");
 	size_t written = fwrite(buffer, sizeof(buffer[0]), samples, fp);
 	
 	if (written != samples) {
@@ -65,7 +65,7 @@ int main() {
 	PaDeviceIndex            default_input; 
 	PaStreamParameters       *input_parameters;
 	const PaDeviceInfo       *default_input_info; 
-	uint16_t                 buff[44100];
+	int16_t                  buff[44100];
 	
 
 

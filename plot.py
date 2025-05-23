@@ -82,7 +82,7 @@ def plotar_onda(sinal_completo, taxa_amostragem, titulo="Onda Sonora", amostras_
 if __name__ == "__main__":
     # 1. Crie um arquivo binário de exemplo (opcional)
     #    Criado com 1.5s para garantir que haja amostras suficientes para o plot de 1s.
-    nome_arquivo_exemplo = "stream_data.bin"
+    nome_arquivo_exemplo = "data.bin"
     
     # 2. Especifique o nome do arquivo binário bruto que você quer ler
     arquivo_para_ler = nome_arquivo_exemplo
