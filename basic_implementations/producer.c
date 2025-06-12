@@ -1,3 +1,4 @@
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/wait.h>
@@ -6,6 +7,20 @@
 #define BUFFER_SIZE (5)
 #define BUFFER_SIZE_BYTES (sizeof(int)*BUFFER_SIZE)
 
+void *thread(void *arg)
+{
+	int *flag = (int*)arg;
+	
+	while (1)
+	{
+		if (*flag == 1) break;
+	}
+
+	printf("thread encerrada\n");
+	
+	pthread_exit(NULL);
+}
+
 int main()
 {
 	int pipefd[2];
@@ -13,6 +28,11 @@ int main()
 	pipe(pipefd);
 
 	int buffer[BUFFER_SIZE] = {0};
+
+	int thread_flag = 0;
+
+	pthread_t new_thread;
+
 
 	if (fork() == 0)
 	{
@@ -28,6 +48,10 @@ int main()
 	{
 		close(pipefd[0]);
 	
+		if (pthread_create(&new_thread, NULL, thread, (void*)&thread_flag) != 0)
+			printf("erro ao criar thread\n");
+		
+
 		for (int i = 0; i < 5; i++)
 		{
 			for (int j = 0; j < BUFFER_SIZE; j++)
@@ -42,6 +66,9 @@ int main()
 		
 		wait(NULL);
 
+		thread_flag = 1;
+
+		pthread_join(new_thread, NULL);
 		exit(EXIT_SUCCESS);
 	}
 	
