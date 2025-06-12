@@ -18,17 +18,9 @@ int main()
 	{
 		close(pipefd[1]);		
 
-		while (read(pipefd[0], &buffer, BUFFER_SIZE_BYTES) > 0)
-		{
-			for (int i = 0; i < BUFFER_SIZE; i++)
-				printf("%d, ", buffer[i]);
-		
-			printf("\n");
-		}
+		dup2(pipefd[0], STDIN_FILENO);
 
-		close(pipefd[0]);
-	
-		exit(EXIT_SUCCESS);
+		execl("consumer", "consumer", NULL);
 	}
 	
 
