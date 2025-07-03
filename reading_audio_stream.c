@@ -9,8 +9,8 @@
 #define SAMPLE_FORMAT      (paInt16)
 #define SAMPLE_RATE          (44100)
 #define FRAMES_PER_BUFFER    (44100)
-#define TIME                     (1)
-#define ARQUIVO "stream_data.bin"
+#define TIME                     (3)
+#define ARQUIVO "teste.bin"
 
 void CheckError (PaError error, const char *step) {
 
@@ -94,7 +94,7 @@ int main() {
 	opening_stream = Pa_OpenStream(&audio_input, input_parameters, NULL, SAMPLE_RATE, FRAMES_PER_BUFFER, paNoFlag, NULL, NULL);
 	CheckError(opening_stream, "opening stream");
 
-
+	printf("comecando\n");
 	//comeca a processar o audio
 	starting_stream = Pa_StartStream(audio_input);
 	CheckError(starting_stream, "starting stream");
@@ -120,5 +120,8 @@ int main() {
 
 	WriteToFile(buff, FRAMES_PER_BUFFER);
 
-	return 0;
+
+	execl("/bin/python3", "python3", "plot.py", (char *)NULL);
+
+	printf("erro\n");
 }

@@ -1,13 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
+from scipy.fft import fft, fftfreq
 import struct
 
-# --- Parâmetros da Onda (ESSENCIAIS para arquivo binário bruto) ---
 TAXA_AMOSTRAGEM = 44100  # Hz (Você DEVE saber isso sobre seu arquivo)
 BITS_POR_AMOSTRA = 16    # 16 bits (Você DEVE saber isso sobre seu arquivo)
 NUM_CANAIS_ESPERADO = 1  # Assumindo mono. Se for estéreo e intercalado, precisará de tratamento.
 
-# --- Função para ler dados de um arquivo binário bruto (.dat, .bin, .raw) ---
 def ler_dados_binario_bruto(nome_arquivo, dtype_esperado=np.int16):
     """
     Lê dados de um arquivo binário bruto.
@@ -36,7 +36,6 @@ def ler_dados_binario_bruto(nome_arquivo, dtype_esperado=np.int16):
         print(f"Erro ao ler o arquivo binário bruto '{nome_arquivo}': {e}")
         return None, None
 
-# --- Função para plotar a onda (MODIFICADA) ---
 def plotar_onda(sinal_completo, taxa_amostragem, titulo="Onda Sonora", amostras_para_plotar=44100):
     """
     Plota uma porção especificada do sinal de áudio no domínio do tempo.
@@ -59,10 +58,15 @@ def plotar_onda(sinal_completo, taxa_amostragem, titulo="Onda Sonora", amostras_
         print("Nenhuma amostra selecionada para plotar.")
         return
 
+    sinal_fft = fft(sinal_plot)
+    sinal_freq = fftfreq(TAXA_AMOSTRAGEM, 1/TAXA_AMOSTRAGEM)[:TAXA_AMOSTRAGEM//25]
+
     duracao_plotada = len(sinal_plot) / taxa_amostragem
     tempo = np.linspace(0, duracao_plotada, len(sinal_plot), endpoint=False)
     
     plt.figure(figsize=(12, 5))
+    
+    plt.subplot(211)
     plt.plot(tempo, sinal_plot)
     
     titulo_final = f"{titulo} - Primeiras {len(sinal_plot)} amostras ({duracao_plotada:.2f}s)"
@@ -76,19 +80,24 @@ def plotar_onda(sinal_completo, taxa_amostragem, titulo="Onda Sonora", amostras_
         max_abs_val = 2**(BITS_POR_AMOSTRA -1) -1
     plt.ylim(-max_abs_val * 1.1, max_abs_val * 1.1)
     
+    plt.subplot(212)
+    plt.plot(sinal_freq, 2.0/TAXA_AMOSTRAGEM * np.abs(sinal_fft[0:TAXA_AMOSTRAGEM//25]))
+    plt.xlabel("frequencias")
+
+    ax = plt.gca()
+
+    ax.xaxis.set_major_locator(ticker.MultipleLocator(100))
+    ax.xaxis.set_minor_locator(ticker.MultipleLocator(50))
+
     plt.show()
 
-# --- Principal ---
 if __name__ == "__main__":
     # 1. Crie um arquivo binário de exemplo (opcional)
     #    Criado com 1.5s para garantir que haja amostras suficientes para o plot de 1s.
-    nome_arquivo_exemplo = "data.bin"
+    nome_arquivo_exemplo = "/home/ana/audio_visualizer/arquivolido.bin"
     
-    # 2. Especifique o nome do arquivo binário bruto que você quer ler
     arquivo_para_ler = nome_arquivo_exemplo
-    # arquivo_para_ler = "SEU_ARQUIVO_BINARIO_AQUI.bin" # <--- COLOQUE O NOME DO SEU ARQUIVO AQUI
-
-    # 3. Especifique a endianness dos dados no seu arquivo binário
+    
     dtype_dados_no_arquivo = np.int16  # Assumindo nativo, geralmente little-endian
     # dtype_dados_no_arquivo = '<i2'    # Forçar little-endian
     # dtype_dados_no_arquivo = '>i2'    # Forçar big-endian
